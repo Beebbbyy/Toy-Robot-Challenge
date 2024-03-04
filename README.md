@@ -38,7 +38,9 @@ Enter commands when prompted to control the toy robot on the tabletop.
 
 Example COMMAND:
 
+```bash
 PLACE 0,0,NORTH
+```
 
 ## Assumptions
 
