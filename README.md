@@ -41,6 +41,15 @@ Example COMMAND:
 ```bash
 PLACE 0,0,NORTH
 ```
+I have also created test_robot.py to ensure that all functions are running correctly.
+
+Use this command:
+
+```bash
+python -m unittest test_robot.py
+
+```
+
 
 ## Assumptions
 
@@ -54,3 +63,4 @@ PLACE 0,0,NORTH
 The `print_table` function visually represents the robot's position on the tabletop using ASCII characters. The robot is represented by the emoji 🤖 for better visualization.
 
 Feel free to explore the code and experiment with different commands to navigate the toy robot on the tabletop.
+
