@@ -74,9 +74,10 @@ def print_table(robot):
             print("+---+---+---+---+---+")
 
 # Main Interaction
-table = Table()
-while True:
-    cmd = input("Enter command: ")
-    result = table.process_command(cmd)
-    print(result)
-    print_table(table.robot)
+if __name__ == '__main__':
+    table = Table()
+    while True:
+        cmd = input("Enter command: ")
+        result = table.process_command(cmd)
+        print(result)
+        print_table(table.robot)
