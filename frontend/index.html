@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="css/grid.css">
     <link rel="stylesheet" href="css/controls.css">
     <link rel="stylesheet" href="css/animations.css">
+    <link rel="stylesheet" href="css/dpad.css">
 </head>
 <body>
     <div class="container">
@@ -43,7 +44,7 @@
                 <!-- Command Buttons -->
                 <div class="button-group" role="group" aria-label="Robot control commands">
                     <div class="placement-controls">
-                        <h3 id="placeHeading">Place Robot</h3>
+                        <h3 id="placeHeading">🎮 Place Robot</h3>
                         <div class="input-group" role="group" aria-labelledby="placeHeading">
                             <label for="placeX">X:</label>
                             <input type="number" id="placeX" name="placeX" min="0" max="4" value="0"
@@ -55,30 +56,54 @@
 
                             <label for="placeF">Direction:</label>
                             <select id="placeF" name="placeF" aria-label="Facing direction" aria-required="true">
-                                <option value="NORTH">NORTH</option>
-                                <option value="EAST">EAST</option>
-                                <option value="SOUTH">SOUTH</option>
-                                <option value="WEST">WEST</option>
+                                <option value="NORTH">⬆️ NORTH</option>
+                                <option value="EAST">➡️ EAST</option>
+                                <option value="SOUTH">⬇️ SOUTH</option>
+                                <option value="WEST">⬅️ WEST</option>
                             </select>
 
-                            <button id="btnPlace" class="btn btn-place" aria-label="Place robot at specified position">PLACE</button>
+                            <button id="btnPlace" class="btn btn-place" aria-label="Place robot at specified position">
+                                📍 PLACE
+                            </button>
                         </div>
                     </div>
 
                     <div class="movement-controls">
-                        <h3 id="movementHeading">Movement</h3>
-                        <div class="btn-row" role="group" aria-labelledby="movementHeading">
-                            <button id="btnMove" class="btn btn-move" aria-label="Move robot forward one unit">MOVE</button>
-                            <button id="btnLeft" class="btn btn-rotate" aria-label="Rotate robot 90 degrees left">LEFT</button>
-                            <button id="btnRight" class="btn btn-rotate" aria-label="Rotate robot 90 degrees right">RIGHT</button>
+                        <h3 id="movementHeading">🕹️ Game Controls</h3>
+
+                        <!-- D-Pad Style Control -->
+                        <div class="dpad-container" role="group" aria-label="Directional controls">
+                            <div class="dpad">
+                                <button id="btnMove" class="dpad-btn dpad-up btn-move" aria-label="Move robot forward (Arrow Up)">
+                                    <span class="dpad-icon">⬆️</span>
+                                    <span class="dpad-label">MOVE</span>
+                                </button>
+                                <button id="btnLeft" class="dpad-btn dpad-left btn-rotate" aria-label="Rotate left (Arrow Left)">
+                                    <span class="dpad-icon">⬅️</span>
+                                    <span class="dpad-label">LEFT</span>
+                                </button>
+                                <div class="dpad-center">
+                                    <span class="dpad-center-icon">🤖</span>
+                                </div>
+                                <button id="btnRight" class="dpad-btn dpad-right btn-rotate" aria-label="Rotate right (Arrow Right)">
+                                    <span class="dpad-icon">➡️</span>
+                                    <span class="dpad-label">RIGHT</span>
+                                </button>
+                            </div>
                         </div>
+
+                        <p class="keyboard-hint">💡 Tip: Use arrow keys on keyboard!</p>
                     </div>
 
                     <div class="action-controls">
-                        <h3 id="actionHeading">Actions</h3>
+                        <h3 id="actionHeading">⚡ Actions</h3>
                         <div class="btn-row" role="group" aria-labelledby="actionHeading">
-                            <button id="btnReport" class="btn btn-report" aria-label="Report current robot position">REPORT</button>
-                            <button id="btnReset" class="btn btn-reset" aria-label="Reset robot to initial state">RESET</button>
+                            <button id="btnReport" class="btn btn-report btn-large" aria-label="Report current robot position">
+                                📊 REPORT
+                            </button>
+                            <button id="btnReset" class="btn btn-reset btn-large" aria-label="Reset robot to initial state">
+                                🔄 RESET
+                            </button>
                         </div>
                     </div>
                 </div>

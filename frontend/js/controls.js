@@ -38,6 +38,9 @@ export function initializeControls() {
 
     // Clear output
     document.getElementById('btnClearOutput').addEventListener('click', clearOutput);
+    
+    // Keyboard controls
+    initializeKeyboardControls();
 }
 
 /**
@@ -239,4 +242,57 @@ async function handleFileUpload() {
 
     // Clear file input
     fileInput.value = '';
+}
+
+/**
+ * Initialize keyboard controls
+ */
+function initializeKeyboardControls() {
+    document.addEventListener('keydown', (e) => {
+        // Don't trigger if user is typing in an input field
+        if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT' || e.target.tagName === 'TEXTAREA') {
+            return;
+        }
+
+        // Visual feedback - add active class
+        let button = null;
+
+        switch (e.key) {
+            case 'ArrowUp':
+                e.preventDefault();
+                button = document.getElementById('btnMove');
+                handleSimpleCommand('MOVE');
+                break;
+            case 'ArrowLeft':
+                e.preventDefault();
+                button = document.getElementById('btnLeft');
+                handleSimpleCommand('LEFT');
+                break;
+            case 'ArrowRight':
+                e.preventDefault();
+                button = document.getElementById('btnRight');
+                handleSimpleCommand('RIGHT');
+                break;
+            case 'r':
+            case 'R':
+                e.preventDefault();
+                button = document.getElementById('btnReport');
+                handleReportCommand();
+                break;
+            case 'p':
+            case 'P':
+                e.preventDefault();
+                button = document.getElementById('btnPlace');
+                handlePlaceCommand();
+                break;
+        }
+
+        // Add visual feedback
+        if (button) {
+            button.classList.add('active');
+            setTimeout(() => {
+                button.classList.remove('active');
+            }, 200);
+        }
+    });
 }
