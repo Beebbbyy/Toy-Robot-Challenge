@@ -7,6 +7,7 @@ import { sendCommand, resetRobot, executeCommands } from './api.js';
 import { updateRobotState, resetRobotState, parseRobotState } from './robot.js';
 import { updateGrid } from './grid.js';
 import { addOutput, clearOutput, addError, addSuccess, addInfo } from './utils.js';
+import { addToHistory } from './history.js';
 
 /**
  * Initialize all control event listeners
@@ -58,11 +59,14 @@ async function handlePlaceCommand() {
             updateRobotState(state.x, state.y, state.facing);
             updateGrid();
             addSuccess(`Robot placed at ${x},${y} facing ${f}`);
+            addToHistory(command, true, `Placed at ${x},${y} facing ${f}`);
         } else {
             addError(response.message || 'Failed to place robot');
+            addToHistory(command, false, response.message);
         }
     } catch (error) {
         addError(`Error: ${error.message}`);
+        addToHistory(command, false, error.message);
     }
 }
 
@@ -80,11 +84,14 @@ async function handleSimpleCommand(command) {
             updateRobotState(state.x, state.y, state.facing);
             updateGrid();
             addSuccess(`Command executed: ${command}`);
+            addToHistory(command, true);
         } else {
             addError(response.message || `Failed to execute ${command}`);
+            addToHistory(command, false, response.message);
         }
     } catch (error) {
         addError(`Error: ${error.message}`);
+        addToHistory(command, false, error.message);
     }
 }
 
@@ -98,6 +105,7 @@ async function handleReportCommand() {
 
         if (response.success && response.output) {
             addSuccess(`REPORT: ${response.output}`);
+            addToHistory('REPORT', true, response.output);
 
             // Update state from report
             const state = parseRobotState(response);
@@ -105,9 +113,11 @@ async function handleReportCommand() {
             updateGrid();
         } else {
             addError(response.message || 'No output from REPORT');
+            addToHistory('REPORT', false, response.message);
         }
     } catch (error) {
         addError(`Error: ${error.message}`);
+        addToHistory('REPORT', false, error.message);
     }
 }
 
@@ -123,6 +133,7 @@ async function handleResetCommand() {
             resetRobotState();
             updateGrid();
             addSuccess('Robot reset successfully');
+            addToHistory('RESET', true);
 
             // Reset input fields
             document.getElementById('placeX').value = '0';
@@ -130,9 +141,11 @@ async function handleResetCommand() {
             document.getElementById('placeF').value = 'NORTH';
         } else {
             addError('Failed to reset robot');
+            addToHistory('RESET', false);
         }
     } catch (error) {
         addError(`Error: ${error.message}`);
+        addToHistory('RESET', false, error.message);
     }
 }
 
@@ -159,14 +172,18 @@ async function handleExecuteCommand() {
 
             if (response.output) {
                 addSuccess(`Output: ${response.output}`);
+                addToHistory(command, true, response.output);
             } else {
                 addSuccess('Command executed successfully');
+                addToHistory(command, true);
             }
         } else {
             addError(response.message || 'Command failed');
+            addToHistory(command, false, response.message);
         }
     } catch (error) {
         addError(`Error: ${error.message}`);
+        addToHistory(command, false, error.message);
     }
 
     // Clear input
@@ -197,9 +214,13 @@ async function handleFileUpload() {
                 addSuccess(`${result.command} - Success`);
                 if (result.result.output) {
                     addOutput(`  → ${result.result.output}`);
+                    addToHistory(result.command, true, result.result.output);
+                } else {
+                    addToHistory(result.command, true);
                 }
             } else {
                 addError(`${result.command} - ${result.error}`);
+                addToHistory(result.command, false, result.error);
             }
         });
 

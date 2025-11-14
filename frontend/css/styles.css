@@ -37,6 +37,37 @@ body {
     min-height: 100vh;
 }
 
+/* Accessibility - Skip Link */
+.skip-link {
+    position: absolute;
+    top: -40px;
+    left: 0;
+    background: var(--primary-color);
+    color: white;
+    padding: 8px 16px;
+    text-decoration: none;
+    border-radius: 0 0 4px 0;
+    z-index: 100;
+    font-weight: 600;
+}
+
+.skip-link:focus {
+    top: 0;
+}
+
+/* Visually Hidden (for screen readers only) */
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+}
+
 /* Container */
 .container {
     max-width: 1400px;
@@ -117,6 +148,77 @@ section h3:first-of-type {
     flex-direction: column;
 }
 
+/* History Section */
+.history-section {
+    display: flex;
+    flex-direction: column;
+}
+
+.history-controls {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+}
+
+.history-container {
+    flex: 1;
+    background-color: #f1f5f9;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    padding: 16px;
+    font-family: 'Courier New', monospace;
+    font-size: 0.85rem;
+    line-height: 1.5;
+    overflow-y: auto;
+    min-height: 150px;
+    max-height: 300px;
+}
+
+.history-container.hidden {
+    display: none;
+}
+
+.history-container .placeholder {
+    color: var(--text-secondary);
+    font-style: italic;
+}
+
+.history-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 8px;
+    margin-bottom: 4px;
+    background-color: white;
+    border-left: 3px solid var(--primary-color);
+    border-radius: 4px;
+    transition: var(--transition);
+}
+
+.history-item:hover {
+    background-color: #e0f2fe;
+    cursor: pointer;
+}
+
+.history-item.success {
+    border-left-color: var(--success-color);
+}
+
+.history-item.error {
+    border-left-color: var(--danger-color);
+}
+
+.history-command {
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.history-timestamp {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+}
+
 /* Output Section */
 .output-section {
     display: flex;
@@ -168,6 +270,23 @@ section h3:first-of-type {
     color: var(--text-secondary);
     font-size: 0.9rem;
     border-top: 1px solid var(--border-color);
+}
+
+.footer p {
+    margin-bottom: 8px;
+}
+
+.footer p:last-child {
+    margin-bottom: 0;
+}
+
+.accessibility-info {
+    margin-top: 8px;
+}
+
+.accessibility-info small {
+    color: var(--text-secondary);
+    opacity: 0.8;
 }
 
 /* Help Text */

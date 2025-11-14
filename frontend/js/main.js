@@ -5,6 +5,7 @@
 
 import { initializeGrid, updateGrid } from './grid.js';
 import { initializeControls } from './controls.js';
+import { initializeHistory } from './history.js';
 import { healthCheck } from './api.js';
 import { addInfo, addError, addSuccess } from './utils.js';
 
@@ -35,6 +36,10 @@ async function init() {
         // Initialize controls
         initializeControls();
         addInfo('Controls initialized');
+
+        // Initialize history
+        initializeHistory();
+        addInfo('Command history ready');
 
         // Display help message
         displayHelp();

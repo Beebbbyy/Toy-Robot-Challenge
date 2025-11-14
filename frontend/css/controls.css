@@ -169,6 +169,15 @@ input[type="file"] {
     background: linear-gradient(135deg, #4b5563, #6b7280);
 }
 
+.btn-secondary {
+    background: linear-gradient(135deg, #64748b, #94a3b8);
+    color: white;
+}
+
+.btn-secondary:hover {
+    background: linear-gradient(135deg, #475569, #64748b);
+}
+
 /* Button Row */
 .btn-row {
     display: flex;
