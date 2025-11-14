@@ -13,6 +13,33 @@ This backend provides a RESTful API for controlling a toy robot on a 5x5 grid ta
 - **Pydantic** - Data validation using Python type annotations
 - **pytest** - Testing framework
 
+## Architecture
+
+The backend follows a layered architecture pattern:
+
+1. **API Layer** (`app/api/routes.py`)
+   - Defines HTTP endpoints and request/response contracts
+   - Handles request validation using Pydantic models
+   - Delegates business logic to the service layer
+
+2. **Service Layer** (`app/services/robot_service.py`)
+   - Implements business logic and rules
+   - Uses Singleton pattern to maintain single robot instance
+   - Provides abstraction between API and domain models
+
+3. **Domain Layer** (`app/models/robot.py`)
+   - Contains core robot logic (movement, rotation, placement)
+   - Independent of API framework
+   - Reusable in different contexts (CLI, API, etc.)
+
+4. **Middleware** (`app/middleware.py`)
+   - **RequestLoggingMiddleware**: Logs all HTTP requests/responses with execution time
+   - **RequestIDMiddleware**: Assigns unique IDs to each request for tracking
+
+5. **Exception Handling** (`app/exceptions.py`)
+   - Custom exceptions: `RobotNotPlacedException`, `InvalidPlacementException`, `InvalidCommandException`
+   - Centralized error handling with consistent JSON error responses
+
 ## Project Structure
 
 ```
@@ -21,6 +48,8 @@ backend/
 │   ├── __init__.py
 │   ├── main.py                 # FastAPI application entry point
 │   ├── config.py               # Configuration settings
+│   ├── exceptions.py           # Custom exception classes and handlers
+│   ├── middleware.py           # Request logging and tracking middleware
 │   ├── models/
 │   │   ├── __init__.py
 │   │   ├── robot.py            # Robot class (core business logic)
@@ -30,7 +59,7 @@ backend/
 │   │   └── routes.py           # API endpoint definitions
 │   └── services/
 │       ├── __init__.py
-│       └── robot_service.py    # Business logic layer
+│       └── robot_service.py    # Business logic layer (Singleton pattern)
 ├── tests/
 │   ├── __init__.py
 │   ├── test_robot.py           # Unit tests for Robot class
@@ -128,6 +157,37 @@ Get the current robot state without executing a command.
 ### POST /api/robot/reset
 Reset the robot (remove from table).
 
+## Response Format
+
+All endpoints return responses in a consistent format:
+
+**Success Response:**
+```json
+{
+  "x": 2,
+  "y": 3,
+  "facing": "NORTH",
+  "is_placed": true,
+  "message": "Robot placed successfully"
+}
+```
+
+**Error Response:**
+```json
+{
+  "error": "Robot has not been placed on the table yet",
+  "details": {
+    "error_type": "robot_not_placed"
+  },
+  "path": "/api/robot/command"
+}
+```
+
+### Custom Headers
+
+- `X-Request-ID`: Unique identifier for each request
+- `X-Process-Time`: Request execution time in seconds
+
 ## Testing
 
 Run all tests:
@@ -168,7 +228,8 @@ By default, CORS is configured for development to allow requests from `http://lo
 
 ## Environment Variables
 
-- `ALLOWED_ORIGINS` - Comma-separated list of allowed CORS origins
+- `ALLOWED_ORIGINS` - Comma-separated list of allowed CORS origins (e.g., `http://localhost:3000,http://example.com`)
+- `DEBUG` - Enable debug mode with auto-reload (default: `True`)
 - `PORT` - Server port (default: 8000)
 
 ## Troubleshooting

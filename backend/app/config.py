@@ -40,7 +40,15 @@ class Settings:
 
     @classmethod
     def get_allowed_origins(cls) -> List[str]:
-        """Get allowed CORS origins from environment or defaults"""
+        """
+        Get allowed CORS origins from environment variable or use defaults.
+
+        Checks the ALLOWED_ORIGINS environment variable for a comma-separated
+        list of origins. If not set, returns the default allowed origins.
+
+        Returns:
+            List of allowed origin URLs for CORS
+        """
         env_origins = os.getenv("ALLOWED_ORIGINS")
         if env_origins:
             return [origin.strip() for origin in env_origins.split(",")]
