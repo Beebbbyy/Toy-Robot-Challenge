@@ -78,12 +78,66 @@
     }
 }
 
+/* Robot Movement Animation */
+@keyframes robotMove {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+}
+
+@keyframes robotRotate {
+    0% {
+        transform: rotate(0deg);
+    }
+    50% {
+        transform: rotate(180deg) scale(1.1);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* Pulse animation for active cell */
+@keyframes cellPulse {
+    0%, 100% {
+        box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.4);
+    }
+    50% {
+        box-shadow: 0 0 0 8px rgba(37, 99, 235, 0);
+    }
+}
+
+/* Direction indicator pulse */
+@keyframes directionPulse {
+    0%, 100% {
+        opacity: 1;
+        filter: drop-shadow(0 0 2px #fbbf24);
+    }
+    50% {
+        opacity: 0.7;
+        filter: drop-shadow(0 0 4px #fbbf24);
+    }
+}
+
+/* Robot animation states */
+.robot-icon.moving {
+    animation: robotMove 0.5s ease-in-out;
+}
+
+.robot-icon.rotating {
+    animation: robotRotate 0.5s ease-in-out;
+}
+
 /* Direction Indicator */
 .robot-direction {
     position: absolute;
     width: 0;
     height: 0;
     border-style: solid;
+    animation: directionPulse 2s ease-in-out infinite;
 }
 
 /* North */
@@ -160,6 +214,40 @@
 .grid-cell.active {
     background-color: #dbeafe;
     border-color: var(--primary-color);
+    animation: cellPulse 2s ease-in-out infinite;
+}
+
+/* Error state for invalid moves */
+.grid-cell.error {
+    background-color: #fee2e2;
+    border-color: var(--danger-color);
+    animation: shake 0.5s ease-in-out;
+}
+
+@keyframes shake {
+    0%, 100% {
+        transform: translateX(0);
+    }
+    25% {
+        transform: translateX(-5px);
+    }
+    75% {
+        transform: translateX(5px);
+    }
+}
+
+/* Success highlight for valid moves */
+.grid-cell.success {
+    animation: successFlash 0.6s ease-in-out;
+}
+
+@keyframes successFlash {
+    0%, 100% {
+        background-color: #ffffff;
+    }
+    50% {
+        background-color: #d1fae5;
+    }
 }
 
 /* Responsive Grid */
