@@ -4,7 +4,25 @@
  */
 
 // API Configuration
-const API_BASE_URL = 'http://localhost:8000/api';
+const API_BASE_URL = 'http://localhost:8000/api/robot';
+const HEALTH_URL = 'http://localhost:8000/health';
+
+/**
+ * Parse a PLACE command string
+ * @param {string} command - Command string like "PLACE 0,0,NORTH"
+ * @returns {Object|null} Parsed place data or null if invalid
+ */
+function parsePlaceCommand(command) {
+    const placeMatch = command.match(/^PLACE\s+(\d+),(\d+),(NORTH|EAST|SOUTH|WEST)$/i);
+    if (placeMatch) {
+        return {
+            x: parseInt(placeMatch[1], 10),
+            y: parseInt(placeMatch[2], 10),
+            facing: placeMatch[3].toUpperCase(),
+        };
+    }
+    return null;
+}
 
 /**
  * Send a command to the robot
@@ -12,24 +30,78 @@ const API_BASE_URL = 'http://localhost:8000/api';
  * @returns {Promise<Object>} Response from the server
  */
 export async function sendCommand(command) {
+    const trimmedCommand = command.trim().toUpperCase();
+
     try {
-        const response = await fetch(`${API_BASE_URL}/command`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ command: command.trim() }),
-        });
+        // Check if it's a PLACE command
+        if (trimmedCommand.startsWith('PLACE')) {
+            const placeData = parsePlaceCommand(trimmedCommand);
+            if (!placeData) {
+                throw new Error('Invalid PLACE command format. Use: PLACE X,Y,F (e.g., PLACE 0,0,NORTH)');
+            }
 
-        if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.detail || `HTTP error! status: ${response.status}`);
+            const response = await fetch(`${API_BASE_URL}/place`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(placeData),
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.detail || errorData.message || `HTTP error! status: ${response.status}`);
+            }
+
+            const data = await response.json();
+            return {
+                success: true,
+                placed: data.is_placed,
+                position: data.is_placed ? { x: data.x, y: data.y, facing: data.facing } : null,
+                message: data.message,
+            };
+        } else {
+            // Handle MOVE, LEFT, RIGHT, REPORT commands
+            const validCommands = ['MOVE', 'LEFT', 'RIGHT', 'REPORT'];
+            if (!validCommands.includes(trimmedCommand)) {
+                throw new Error(`Invalid command: ${trimmedCommand}. Valid commands: ${validCommands.join(', ')}, PLACE`);
+            }
+
+            const response = await fetch(`${API_BASE_URL}/command`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ command: trimmedCommand }),
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.detail || errorData.message || `HTTP error! status: ${response.status}`);
+            }
+
+            const data = await response.json();
+
+            // For REPORT command, extract output
+            let output = null;
+            if (trimmedCommand === 'REPORT' && data.is_placed) {
+                output = `${data.x},${data.y},${data.facing}`;
+            }
+
+            return {
+                success: true,
+                placed: data.is_placed,
+                position: data.is_placed ? { x: data.x, y: data.y, facing: data.facing } : null,
+                message: data.message,
+                output: output,
+            };
         }
-
-        return await response.json();
     } catch (error) {
         console.error('Error sending command:', error);
-        throw error;
+        return {
+            success: false,
+            message: error.message,
+        };
     }
 }
 
@@ -50,10 +122,19 @@ export async function getRobotState() {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
 
-        return await response.json();
+        const data = await response.json();
+        return {
+            success: true,
+            placed: data.is_placed,
+            position: data.is_placed ? { x: data.x, y: data.y, facing: data.facing } : null,
+            message: data.message,
+        };
     } catch (error) {
         console.error('Error getting robot state:', error);
-        throw error;
+        return {
+            success: false,
+            message: error.message,
+        };
     }
 }
 
@@ -74,10 +155,17 @@ export async function resetRobot() {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
 
-        return await response.json();
+        const data = await response.json();
+        return {
+            success: true,
+            message: data.message,
+        };
     } catch (error) {
         console.error('Error resetting robot:', error);
-        throw error;
+        return {
+            success: false,
+            message: error.message,
+        };
     }
 }
 
@@ -99,7 +187,7 @@ export async function executeCommands(commands) {
             const result = await sendCommand(command);
             results.push({
                 command,
-                success: true,
+                success: result.success,
                 result,
             });
         } catch (error) {
@@ -120,7 +208,7 @@ export async function executeCommands(commands) {
  */
 export async function healthCheck() {
     try {
-        const response = await fetch(`${API_BASE_URL}/health`, {
+        const response = await fetch(HEALTH_URL, {
             method: 'GET',
         });
         return response.ok;
