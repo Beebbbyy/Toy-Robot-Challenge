@@ -2,36 +2,46 @@
    Toy Robot Simulator - Grid Styles
    ======================================== */
 
-/* Grid Container */
+/* Grid Container with Glassmorphism */
 .grid-container {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
     grid-template-rows: repeat(5, 1fr);
-    gap: 4px;
-    background-color: var(--border-color);
-    padding: 4px;
-    border-radius: var(--radius);
+    gap: var(--space-1);
+    background: var(--card-bg);
+    backdrop-filter: blur(var(--blur-md));
+    -webkit-backdrop-filter: blur(var(--blur-md));
+    padding: var(--space-1);
+    border-radius: var(--radius-lg);
     aspect-ratio: 1;
     max-width: 500px;
-    margin: 0 auto 20px;
-    box-shadow: var(--shadow-md);
+    margin: 0 auto var(--space-5);
+    box-shadow: var(--shadow-lg), var(--shadow-glass);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    transition: var(--transition-theme);
 }
 
-/* Grid Cell */
+[data-theme="dark"] .grid-container {
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Grid Cell with Theme Support */
 .grid-cell {
-    background-color: #ffffff;
+    background-color: var(--bg-tertiary);
     border: 1px solid var(--border-color);
-    border-radius: 4px;
+    border-radius: var(--radius-sm);
     position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: var(--transition);
+    transition: var(--transition-all);
     min-height: 60px;
 }
 
 .grid-cell:hover {
-    background-color: #f1f5f9;
+    background-color: var(--bg-secondary);
+    transform: scale(1.05);
+    box-shadow: var(--shadow-sm);
 }
 
 /* Cell Coordinates */
@@ -182,17 +192,18 @@
     color: white;
 }
 
-/* Grid Info */
+/* Grid Info with Theme Support */
 .grid-info {
-    background-color: var(--bg-color);
-    padding: 16px;
-    border-radius: var(--radius);
+    background-color: var(--bg-secondary);
+    padding: var(--space-4);
+    border-radius: var(--radius-md);
     border: 1px solid var(--border-color);
+    transition: var(--transition-theme);
 }
 
 .grid-info p {
-    margin-bottom: 8px;
-    font-size: 0.95rem;
+    margin-bottom: var(--space-2);
+    font-size: var(--font-size-base);
 }
 
 .grid-info p:last-child {
@@ -203,18 +214,23 @@
     color: var(--text-primary);
     min-width: 120px;
     display: inline-block;
+    font-weight: var(--font-weight-semibold);
 }
 
 .grid-info span {
     color: var(--primary-color);
-    font-weight: 600;
+    font-weight: var(--font-weight-semibold);
 }
 
-/* Active Cell (when robot is placed) */
+/* Active Cell (when robot is placed) with Theme Support */
 .grid-cell.active {
-    background-color: #dbeafe;
+    background-color: var(--color-primary-100);
     border-color: var(--primary-color);
     animation: cellPulse 2s ease-in-out infinite;
+}
+
+[data-theme="dark"] .grid-cell.active {
+    background-color: var(--color-primary-900);
 }
 
 /* Error state for invalid moves */

@@ -27,28 +27,43 @@
 input[type="number"],
 input[type="text"],
 select {
-    padding: 8px 12px;
-    border: 2px solid var(--border-color);
-    border-radius: 6px;
-    font-size: 0.9rem;
+    padding: var(--space-2) var(--space-3);
+    border: 2px solid var(--input-border);
+    border-radius: var(--radius-base);
+    font-size: var(--font-size-sm);
     font-family: inherit;
-    background-color: white;
-    transition: var(--transition);
+    background-color: var(--input-bg);
+    transition: var(--transition-colors),
+                border-color var(--duration-base) var(--ease-in-out),
+                box-shadow var(--duration-base) var(--ease-in-out),
+                transform var(--duration-fast) var(--ease-smooth);
+    color: var(--text-primary);
 }
 
 input[type="number"]:hover,
 input[type="text"]:hover,
 select:hover {
-    border-color: #cbd5e1;
+    border-color: var(--input-border-hover);
+    background-color: var(--input-bg-hover);
+    transform: translateY(-1px);
 }
 
 input[type="number"]:focus,
 input[type="text"]:focus,
 select:focus {
     outline: none;
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-    background-color: #fafbff;
+    border-color: var(--input-border-focus);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15),
+                0 4px 12px rgba(37, 99, 235, 0.1);
+    background-color: var(--input-bg-focus);
+    transform: translateY(-2px);
+}
+
+[data-theme="dark"] input[type="number"]:focus,
+[data-theme="dark"] input[type="text"]:focus,
+[data-theme="dark"] select:focus {
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25),
+                0 4px 12px rgba(59, 130, 246, 0.2);
 }
 
 input[type="number"]:invalid,
@@ -83,22 +98,24 @@ input[type="file"] {
     cursor: pointer;
 }
 
-/* Buttons */
+/* Buttons with Enhanced Micro-interactions */
 .btn {
-    padding: 10px 20px;
+    padding: var(--space-3) var(--space-5);
     border: none;
-    border-radius: 6px;
-    font-size: 0.95rem;
-    font-weight: 600;
+    border-radius: var(--radius-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
     cursor: pointer;
-    transition: var(--transition);
+    transition: var(--transition-all);
     box-shadow: var(--shadow-sm);
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: var(--letter-spacing-wide);
     position: relative;
     overflow: hidden;
+    user-select: none;
 }
 
+/* Enhanced Ripple Effect */
 .btn::before {
     content: '';
     position: absolute;
@@ -107,23 +124,51 @@ input[type="file"] {
     width: 0;
     height: 0;
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.5);
+    background: rgba(255, 255, 255, 0.6);
     transform: translate(-50%, -50%);
-    transition: width 0.6s, height 0.6s;
+    transition: width var(--duration-slow) var(--ease-out),
+                height var(--duration-slow) var(--ease-out),
+                opacity var(--duration-slow) var(--ease-out);
+    opacity: 0;
+    pointer-events: none;
 }
 
 .btn:active::before {
-    width: 300px;
-    height: 300px;
+    width: 400px;
+    height: 400px;
+    opacity: 1;
+}
+
+/* Shine effect on hover */
+.btn::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.3),
+        transparent
+    );
+    transition: left var(--duration-slower) var(--ease-in-out);
+    pointer-events: none;
+}
+
+.btn:hover::after {
+    left: 100%;
 }
 
 .btn:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-md);
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: var(--shadow-lg);
 }
 
 .btn:active {
-    transform: translateY(0);
+    transform: translateY(-1px) scale(0.98);
+    box-shadow: var(--shadow-md);
 }
 
 .btn:focus {
