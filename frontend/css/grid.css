@@ -2,6 +2,36 @@
    Toy Robot Simulator - Grid Styles
    ======================================== */
 
+/* Grid Controls */
+.grid-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-4);
+    gap: var(--space-3);
+    flex-wrap: wrap;
+}
+
+.view-controls,
+.zoom-controls {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+}
+
+.zoom-level {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-primary);
+    min-width: 50px;
+    text-align: center;
+}
+
+.btn-small {
+    padding: var(--space-2) var(--space-3);
+    font-size: var(--font-size-sm);
+}
+
 /* Grid Container with Glassmorphism */
 .grid-container {
     display: grid;
@@ -18,7 +48,56 @@
     margin: 0 auto var(--space-5);
     box-shadow: var(--shadow-lg), var(--shadow-glass);
     border: 1px solid rgba(255, 255, 255, 0.18);
-    transition: var(--transition-theme);
+    transition: transform 0.3s ease, var(--transition-theme);
+    transform-style: preserve-3d;
+    position: relative;
+}
+
+/* Isometric View */
+.grid-container.isometric {
+    transform: rotateX(45deg) rotateZ(45deg) scale(0.9);
+}
+
+/* Zoom Levels */
+.grid-container.zoom-50 {
+    transform: scale(0.5);
+}
+
+.grid-container.zoom-75 {
+    transform: scale(0.75);
+}
+
+.grid-container.zoom-100 {
+    transform: scale(1);
+}
+
+.grid-container.zoom-125 {
+    transform: scale(1.25);
+}
+
+.grid-container.zoom-150 {
+    transform: scale(1.5);
+}
+
+/* Isometric with zoom */
+.grid-container.isometric.zoom-50 {
+    transform: rotateX(45deg) rotateZ(45deg) scale(0.45);
+}
+
+.grid-container.isometric.zoom-75 {
+    transform: rotateX(45deg) rotateZ(45deg) scale(0.675);
+}
+
+.grid-container.isometric.zoom-100 {
+    transform: rotateX(45deg) rotateZ(45deg) scale(0.9);
+}
+
+.grid-container.isometric.zoom-125 {
+    transform: rotateX(45deg) rotateZ(45deg) scale(1.125);
+}
+
+.grid-container.isometric.zoom-150 {
+    transform: rotateX(45deg) rotateZ(45deg) scale(1.35);
 }
 
 [data-theme="dark"] .grid-container {
@@ -42,6 +121,116 @@
     background-color: var(--bg-secondary);
     transform: scale(1.05);
     box-shadow: var(--shadow-sm);
+    cursor: pointer;
+}
+
+/* Coordinate Preview on Hover */
+.grid-cell:hover::after {
+    content: 'Position: (' attr(data-x) ', ' attr(data-y) ')';
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(0, 0, 0, 0.9);
+    color: white;
+    padding: 6px 12px;
+    border-radius: var(--radius-sm);
+    font-size: 0.75rem;
+    white-space: nowrap;
+    pointer-events: none;
+    z-index: 1000;
+    margin-bottom: 8px;
+    animation: tooltipFadeIn 0.2s ease-out;
+}
+
+/* Show different tooltip when robot not placed */
+.grid-cell:not(.active):hover::after {
+    content: 'Click to place at (' attr(data-x) ', ' attr(data-y) ')';
+}
+
+/* Don't show placement tooltip on active cell */
+.grid-cell.active:hover::after {
+    content: 'Robot at (' attr(data-x) ', ' attr(data-y) ') - Drag to move';
+}
+
+@keyframes tooltipFadeIn {
+    from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-5px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+}
+
+/* Path Trail */
+.grid-cell.path-trail {
+    background-color: rgba(59, 130, 246, 0.2);
+    border-color: rgba(59, 130, 246, 0.4);
+    position: relative;
+}
+
+.grid-cell.path-trail::after {
+    content: '•';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: rgba(59, 130, 246, 0.6);
+    font-size: 1.5rem;
+    pointer-events: none;
+}
+
+[data-theme="dark"] .grid-cell.path-trail {
+    background-color: rgba(59, 130, 246, 0.15);
+    border-color: rgba(59, 130, 246, 0.3);
+}
+
+/* Ghost Robot Preview */
+.grid-cell.ghost-preview {
+    background-color: rgba(37, 99, 235, 0.1);
+    border-color: var(--primary-color);
+    border-style: dashed;
+}
+
+.ghost-robot {
+    width: 70%;
+    height: 70%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    opacity: 0.5;
+}
+
+.ghost-robot-icon {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(37, 99, 235, 0.3), rgba(59, 130, 246, 0.3));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.2);
+    border: 2px dashed var(--primary-color);
+}
+
+.ghost-robot-symbol {
+    font-size: 1.5rem;
+    opacity: 0.7;
+}
+
+/* Draggable state */
+.grid-cell.dragging {
+    opacity: 0.5;
+    cursor: grabbing;
+}
+
+.grid-cell.drag-over {
+    background-color: rgba(34, 197, 94, 0.2);
+    border-color: #22c55e;
+    transform: scale(1.1);
 }
 
 /* Cell Coordinates */
@@ -63,6 +252,7 @@
     align-items: center;
     justify-content: center;
     position: relative;
+    transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .robot-icon {
@@ -75,6 +265,16 @@
     justify-content: center;
     box-shadow: var(--shadow-md);
     animation: robotAppear 0.3s ease-out;
+    cursor: grab;
+}
+
+.robot-icon:active {
+    cursor: grabbing;
+}
+
+/* Smooth movement transitions */
+.grid-cell.robot-moving {
+    transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 @keyframes robotAppear {
