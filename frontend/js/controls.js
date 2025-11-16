@@ -245,6 +245,34 @@ async function handleFileUpload() {
 }
 
 /**
+ * Place robot at specific coordinates (used by drag-to-place and click-to-place)
+ * @param {number} x - X coordinate
+ * @param {number} y - Y coordinate
+ * @param {string} facing - Direction (NORTH, EAST, SOUTH, WEST)
+ */
+export async function placeRobotAtCoordinates(x, y, facing = 'NORTH') {
+    const command = `PLACE ${x},${y},${facing}`;
+
+    try {
+        const response = await sendCommand(command);
+
+        if (response.success) {
+            const state = parseRobotState(response);
+            updateRobotState(state.x, state.y, state.facing);
+            updateGrid();
+            addSuccess(`Robot placed at ${x},${y} facing ${facing}`);
+            addToHistory(command, true, `Placed at ${x},${y} facing ${facing}`);
+        } else {
+            addError(response.message || 'Failed to place robot');
+            addToHistory(command, false, response.message);
+        }
+    } catch (error) {
+        addError(`Error: ${error.message}`);
+        addToHistory(command, false, error.message);
+    }
+}
+
+/**
  * Initialize keyboard controls
  */
 function initializeKeyboardControls() {

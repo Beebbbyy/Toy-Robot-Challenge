@@ -11,6 +11,8 @@ export const robotState = {
     y: null,
     facing: null,
     isPlaced: false,
+    previousX: null,
+    previousY: null,
 };
 
 /**
@@ -20,10 +22,26 @@ export const robotState = {
  * @param {string|null} facing - Direction (NORTH, EAST, SOUTH, WEST)
  */
 export function updateRobotState(x, y, facing) {
+    // Store previous position for animation
+    robotState.previousX = robotState.x;
+    robotState.previousY = robotState.y;
+
+    // Update current position
     robotState.x = x;
     robotState.y = y;
     robotState.facing = facing;
     robotState.isPlaced = x !== null && y !== null && facing !== null;
+
+    // Trigger animation if position changed
+    if (robotState.previousX !== null && robotState.previousY !== null &&
+        (robotState.previousX !== x || robotState.previousY !== y)) {
+        // Import and call animation function
+        import('./grid.js').then(module => {
+            if (module.animateRobotMovement) {
+                module.animateRobotMovement(robotState.previousX, robotState.previousY, x, y);
+            }
+        });
+    }
 }
 
 /**
